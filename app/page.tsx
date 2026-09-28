@@ -11,12 +11,12 @@ export default async function Home() {
       .select("first_name, last_name").eq("id", user.id).maybeSingle();
     if (!error && !hasName(profile)) redirect("/profile");
   }
-  const { data: movies, error } = await supabase.from("movies").select("id,title,year");
+  const { data: movies, error } = await supabase.from("movies").select("title,year");
   return <main><section className="hero"><p className="eyebrow">THE MOVIE CLUB</p>
     <h1>A little cinema.<br />A lot to talk about.</h1><p>Explore the collection. Find your next favorite.</p></section>
     <section><div className="section-title"><h2>My Movies</h2><span className="muted">THE COLLECTION</span></div>
       {error ? <p role="alert" className="error">We couldn’t load the movies. Please try again shortly.</p>
-        : movies?.length ? <ul className="movie-grid">{movies.map((movie, i) => <li className="movie-card" key={movie.id}>
+        : movies?.length ? <ul className="movie-grid">{movies.map((movie, i) => <li className="movie-card" key={`${movie.title}-${movie.year}-${i}`}>
           <span className="movie-number">{String(i + 1).padStart(2, "0")}</span><h3>{movie.title}</h3><p>{movie.year}</p>
         </li>)}</ul> : <p>The collection is coming soon.</p>}
     </section><section className="gate"><div><p className="eyebrow">{user ? "WELCOME BACK" : "MEMBERS ONLY"}</p>
