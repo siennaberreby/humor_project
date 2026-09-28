@@ -1,26 +1,45 @@
 @import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+:root { --background: #f7f5ef; --foreground: #202a25; }
+@theme inline { --color-background: var(--background); --color-foreground: var(--foreground); --font-sans: var(--font-geist-sans); --font-mono: var(--font-geist-mono); }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--background); color: var(--foreground); font-family: Arial, Helvetica, sans-serif; line-height: 1.65; }
+header { max-width: 1120px; margin: auto; width: 100%; padding: 28px 32px; display: flex; justify-content: space-between; align-items: center; gap: 24px; border-bottom: 1px solid #d8ddd4; }
+.brand { font-family: Georgia, serif; font-size: 26px; text-decoration: none; font-weight: bold; }
+.brand span { display: block; font: 9px Arial, sans-serif; letter-spacing: 2px; }
+nav { display: flex; align-items: center; flex-wrap: wrap; gap: 24px; font-size: 14px; }
+a { color: inherit; text-underline-offset: 4px; }
+nav a { text-decoration: none; }
+main { max-width: 1120px; padding: 32px; margin: 0 auto; width: 100%; }
+.narrow { max-width: 680px; padding-top: 64px; }
+.hero { padding: 40px 0 56px; }
+h1, h2, h3 { font-family: Georgia, serif; line-height: 1.15; }
+h1 { font-size: clamp(38px, 6vw, 66px); letter-spacing: -2px; margin: 16px 0 24px; }
+h2 { font-size: 29px; margin: 12px 0 16px; }
+h3 { font-size: 25px; margin: 28px 0 10px; }
+p { margin: 12px 0 22px; }
+.eyebrow { color: #42624c; font-size: 11px; font-weight: bold; letter-spacing: 2px; }
+.muted { font-size: 13px; color: #616a63; }
+.section-title { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.movie-grid { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
+.movie-card { background: #ebece3; border: 1px solid #d7dccf; padding: 26px; border-radius: 8px; }
+.movie-number { color: #556b58; font-size: 12px; letter-spacing: 2px; }
+.movie-card p { margin: 0; color: #616a63; }
+.gate { display: flex; justify-content: space-between; align-items: center; gap: 32px; background: #e3e9dc; padding: 32px; border-radius: 10px; margin: 48px 0 24px; }
+.button, button { display: inline-block; border: 0; border-radius: 5px; background: #294c3a; color: #fff; padding: 12px 20px; font: inherit; font-size: 14px; cursor: pointer; text-decoration: none; text-align: center; }
+.button { flex-shrink: 0; }
+button:hover, .button:hover { background: #183927; }
+button:disabled { opacity: .6; cursor: wait; }
+.secondary { background: transparent; border: 1px solid #a8b4a7; color: #294c3a; }
+.secondary:hover { background: #e3e9dc; }
+.card { background: #fffef9; border: 1px solid #d8ddd4; border-radius: 10px; padding: 32px; }
+.profile-form label { display: block; font-weight: bold; margin-top: 20px; }
+input { display: block; width: 100%; border: 1px solid #adb8ab; border-radius: 5px; padding: 10px 12px; margin-top: 7px; font: inherit; font-weight: normal; background: white; }
+input[type=file] { font-size: 14px; }
+input::file-selector-button { background: #e3e9dc; border: 0; padding: 8px; border-radius: 3px; margin-right: 12px; }
+.avatar-row { display: flex; align-items: center; gap: 20px; }
+.avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.placeholder { display: grid; place-items: center; background: #e3e9dc; font: 32px Georgia, serif; }
+.error { color: #9a2525; background: #fff0ed; padding: 12px; border-radius: 5px; }
+.notice, .success { background: #e3e9dc; padding: 14px; border-radius: 5px; }
+:focus-visible { outline: 3px solid #aa712c; outline-offset: 4px; }
+@media(max-width: 650px) { header { flex-direction: column; align-items: flex-start; padding: 22px; } nav { gap: 16px; } main { padding: 24px 20px; } .hero { padding: 24px 0; } .gate { flex-direction: column; align-items: flex-start; padding: 24px; } .card { padding: 24px; } .avatar-row { align-items: flex-start; } .avatar-row h2 { font-size: 23px; } }
