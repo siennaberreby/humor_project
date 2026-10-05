@@ -43,3 +43,24 @@ input::file-selector-button { background: #e3e9dc; border: 0; padding: 8px; bord
 .notice, .success { background: #e3e9dc; padding: 14px; border-radius: 5px; }
 :focus-visible { outline: 3px solid #aa712c; outline-offset: 4px; }
 @media(max-width: 650px) { header { flex-direction: column; align-items: flex-start; padding: 22px; } nav { gap: 16px; } main { padding: 24px 20px; } .hero { padding: 24px 0; } .gate { flex-direction: column; align-items: flex-start; padding: 24px; } .card { padding: 24px; } .avatar-row { align-items: flex-start; } .avatar-row h2 { font-size: 23px; } }
+.takes-hero { padding-bottom: 32px; }
+.takes-layout { display: grid; grid-template-columns: minmax(270px, .85fr) minmax(0, 1.3fr); gap: 32px; align-items: start; }
+.studio { background: #e3e9dc; }
+.studio h2 { font-size: 30px; }
+.studio label { font-weight: bold; }
+textarea { display: block; width: 100%; margin-top: 8px; padding: 14px; background: #fffef9; border: 1px solid #a8b4a7; border-radius: 5px; font: inherit; resize: vertical; }
+.form-meta,.take-meta,.share-row { display:flex; justify-content:space-between; align-items:center; gap:12px; font-size:12px; }
+.text-button { background:transparent; padding:6px 0; color:#294c3a; text-decoration:underline; }
+.text-button:hover { background:transparent; color:#132e20; }
+.take-card { margin-bottom:18px; }
+.take-meta { letter-spacing:1px; color:#616a63; font-size:10px; }
+blockquote { font: 27px/1.4 Georgia,serif; margin:24px 0; overflow-wrap:anywhere; }
+details { margin:20px 0; font-size:13px; color:#616a63; }
+summary { cursor:pointer; }
+details p { overflow-wrap:anywhere; }
+.vote-row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.vote { font-size:12px; padding:9px 12px; }
+.share-row { border-top:1px solid #d8ddd4; padding-top:12px; margin-top:20px; }
+.feed-tabs { display:flex; gap:16px; font-size:14px; }
+.feed-tabs [aria-current=page] { font-weight:bold; text-decoration-thickness:3px; }
+@media(max-width:800px) { .takes-layout { grid-template-columns:1fr; } .takes-hero h1 { font-size:46px; } }

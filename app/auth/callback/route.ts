@@ -11,7 +11,7 @@ export async function GET(request: Request) {
     if (!error && data.user) {
       const { data: profile } = await supabase.from("profiles")
         .select("first_name, last_name").eq("id", data.user.id).maybeSingle();
-      return NextResponse.redirect(new URL(hasName(profile) ? "/members" : "/profile", url.origin));
+      return NextResponse.redirect(new URL(hasName(profile) ? "/takes" : "/profile", url.origin));
     }
   }
   return NextResponse.redirect(new URL("/login?error=callback", url.origin));
