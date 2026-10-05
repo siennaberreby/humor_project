@@ -17,11 +17,11 @@ export async function POST(request: Request) {
   const { data: allowed, error: quotaError } = await admin.rpc("reserve_generation", { target_user: user.id });
   if (quotaError) return Response.json({ error: "We couldn’t start your caption. Please try again." }, { status: 503 });
   if (!allowed) return Response.json({ error: "Please wait 30 seconds between attempts. Each member gets 10 attempts per 24 hours." }, { status: 429 });
-  const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  const model = process.env.GEMINI_MODEL || "gemini-3.8-flash";
   try {
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
       method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-      body: JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] }, contents: [{ role: "user", parts: [{ text: body.prompt.trim() }] }], generationConfig: { temperature: 0.9, maxOutputTokens: 1024 } }),
+      body: JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] }, contents: [{ role: "user", parts: [{ text: body.prompt.trim() }] }], generationConfig: { temperature: 1, maxOutputTokens: 2048, thinkingConfig: { thinkingLevel: "low" } } }),
       signal: AbortSignal.timeout(45000),
     });
     if (!response.ok) return Response.json({ error: response.status === 429 ? "The AI provider is busy or its quota is used up. Please try again later." : "The AI provider couldn’t create this caption. Please try again later." }, { status: 503 });
