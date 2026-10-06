@@ -24,7 +24,11 @@ export async function POST(request: Request) {
       body: JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] }, contents: [{ role: "user", parts: [{ text: body.prompt.trim() }] }], generationConfig: { temperature: 1, maxOutputTokens: 2048, thinkingConfig: { thinkingLevel: "low" } } }),
       signal: AbortSignal.timeout(45000),
     });
-    if (!response.ok) return Response.json({ error: response.status === 429 ? "The AI provider is busy or its quota is used up. Please try again later." : "The AI provider couldn’t create this caption. Please try again later." }, { status: 503 });
+    if (!response.ok) {
+      const providerError = await response.json().catch(() => null);
+      console.error("Gemini generation failed", { httpStatus: response.status, code: providerError?.error?.code, status: providerError?.error?.status });
+      return Response.json({ error: response.status === 429 ? "The AI provider is busy or its quota is used up. Please try again later." : "The AI provider couldn’t create this caption. Please try again later." }, { status: 503 });
+    }
     const result = await response.json();
     const candidate = result.candidates?.[0];
     const caption = candidate?.content?.parts?.filter((p: { text?: string; thought?: boolean }) => !p.thought && typeof p.text === "string").map((p: { text: string }) => p.text).join("").trim();
