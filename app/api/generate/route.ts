@@ -17,13 +17,20 @@ export async function POST(request: Request) {
   const { data: allowed, error: quotaError } = await admin.rpc("reserve_generation", { target_user: user.id });
   if (quotaError) return Response.json({ error: "We couldn’t start your caption. Please try again." }, { status: 503 });
   if (!allowed) return Response.json({ error: "Please wait 30 seconds between attempts. Each member gets 10 attempts per 24 hours." }, { status: 429 });
-  const model = process.env.GEMINI_MODEL || "gemini-3.8-flash";
+  let model = process.env.GEMINI_MODEL || "gemini-3.8-flash";
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
+    const generate = (selectedModel: string) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(selectedModel)}:generateContent`, {
       method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-      body: JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] }, contents: [{ role: "user", parts: [{ text: body.prompt.trim() }] }], generationConfig: { temperature: 1, maxOutputTokens: 2048, thinkingConfig: { thinkingLevel: "low" } } }),
-      signal: AbortSignal.timeout(45000),
+      body: JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] }, contents: [{ role: "user", parts: [{ text: body.prompt.trim() }] }], generationConfig: { temperature: 1, maxOutputTokens: 2048, ...(selectedModel === "gemini-3.8-flash" ? { thinkingConfig: { thinkingLevel: "low" } } : {}) } }),
+      signal: AbortSignal.timeout(20000),
     });
+    let response: Response;
+    try { response = await generate(model); }
+    catch { response = new Response(null, { status: 503 }); }
+    if ([429, 502, 503, 504].includes(response.status) && model !== "gemini-3.5-flash-lite") {
+      model = "gemini-3.5-flash-lite";
+      response = await generate(model);
+    }
     if (!response.ok) {
       const providerError = await response.json().catch(() => null);
       console.error("Gemini generation failed", { httpStatus: response.status, code: providerError?.error?.code, status: providerError?.error?.status });
