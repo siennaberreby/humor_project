@@ -55,3 +55,30 @@ Live acceptance checks:
 - Submit the immutable, commit-specific Vercel URL, not the moving production alias.
 
 References: [Supabase SSR](https://supabase.com/docs/guides/auth/server-side/creating-a-client), [Google provider](https://supabase.com/docs/guides/auth/social-login/auth-google).
+
+## Week 4 — City Takes
+
+City Takes turns an everyday Columbia/NYC scene into a short, AI-written movie tagline. Signed-out visitors land directly on `/login`; signed-in visitors land on `/takes`. The original collection remains at `/movies`. Profile photos were removed from the current UI in response to PM feedback; existing stored photos are unchanged.
+
+- A rotating daily scene reduces blank-page friction and gives Sam a reason to return.
+- Fresh and Top (among the latest 100 posts) plus shareable post links help good captions travel.
+- Showing the source scene gives people context to judge the humor. One vote per account prevents repeat clicking from inflating the score; members can change their vote.
+- This applies a proposed improvement to caption apps like Crackd: make creation approachable with a local prompt and make discovery useful with context and community ranking. It is a design proposal, not a claim about Crackd’s current features.
+- PM feedback received: open directly to login; no profile picture. Both implemented. Further feedback can be captured after the group session.
+
+### Deployment configuration
+
+Apply `supabase/migrations/202610050001_ratings.sql` to the existing project. It enables RLS for all existing public tables and adds generations, votes, and quota reservations. Movies and caption content are publicly readable. Profiles and individual votes are owner-only. Authenticated users may insert votes and update only the vote value. Clients cannot create or edit generated content; the authenticated server endpoint calls Gemini and persists its actual output. The score function exposes aggregate counts only. Generation attempts are server-only, with an atomic limit of 10 attempts in 24 hours and 30 seconds between attempts.
+
+Set server-only `GEMINI_API_KEY` and `SUPABASE_SERVICE_ROLE_KEY` in Vercel Production and Preview, along with existing public Supabase settings. Optional `GEMINI_MODEL` defaults to `gemini-3.8-flash`. Never prefix secrets with `NEXT_PUBLIC_`. Gemini errors are shown honestly; no canned captions are substituted for failed generations. The database saves the user prompt, complete system prompt, model, caption, creator, and creation time. Free provider quotas may limit availability.
+
+For each submission deployment add its exact `/auth/callback` URL to Supabase’s redirect allowlist. Leave Vercel deployment protection off so graders can reach login in Incognito.
+
+### Acceptance checks
+
+1. In a signed-out browser, `/` redirects to `/login`; `/api/generate` rejects unauthenticated requests; public shared posts show a login link instead of vote buttons.
+2. Sign in with Google. Complete names if required. Create a scene and verify its generated caption persists after reload.
+3. Vote up, reload, then change to down. There must still be exactly one row for that user/post pair, with the latest value.
+4. Test with another account: it can vote independently, cannot read other users’ vote rows or profiles, and cannot forge another user ID.
+5. Verify anonymous writes and direct client generation inserts fail. All public tables must have RLS enabled.
+6. Open a shared post in a signed-out browser, inspect mobile layout, and confirm the original movies and profile-name editing still work.
